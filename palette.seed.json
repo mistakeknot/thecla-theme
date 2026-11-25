@@ -1,0 +1,53 @@
+{
+  "label": "Thecla",
+  "id": "thecla",
+  "light": {
+    "roles": {
+      "accent": "#a32c6a",
+      "danger": "#b52e58",
+      "success": "#24745e",
+      "warning": "#91601f",
+      "pro": "#236e84"
+    },
+    "gray": {
+      "anchors": {
+        "surface-0": "#fcf3f7",
+        "surface-1": "#fdf7fa",
+        "surface-2": "#fefbfc",
+        "text-primary": "#2c1723",
+        "text-secondary": "#705362",
+        "text-muted": "#806473"
+      }
+    },
+    "git": {
+      "added": "#24745e",
+      "removed": "#ad2851",
+      "merged": "#a32c6a"
+    }
+  },
+  "dark": {
+    "roles": {
+      "accent": "#f29bce",
+      "danger": "#f181a4",
+      "success": "#8bd5bc",
+      "warning": "#efbc8f",
+      "pro": "#8ed5ee"
+    },
+    "gray": {
+      "anchors": {
+        "surface-0": "#000000",
+        "surface-1": "#141313",
+        "surface-2": "#1a191a",
+        "surface-3": "#292727",
+        "text-primary": "#f2eaf0",
+        "text-secondary": "#d0adbf",
+        "text-muted": "#b990a5"
+      }
+    },
+    "git": {
+      "added": "#8bd5bc",
+      "removed": "#f394b2",
+      "merged": "#e9a3d2"
+    }
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "name": "thecla-theme",
+  "owner": { "name": "mistakeknot" },
+  "plugins": [{ "name": "thecla-theme", "source": "./" }]
+}
