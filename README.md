@@ -72,3 +72,7 @@ Once Claude Code has loaded the mod, `.claude-plugin/types/` holds its types and
 - The fastest pace follows the app's permission and notification hooks and
   questions the model asks; a prompt that raises neither keeps the working pace.
 - A mod can only ask for the generic monospaced family, not a specific font.
+
+## License
+
+MIT. See [LICENSE](LICENSE).

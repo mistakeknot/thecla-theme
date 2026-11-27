@@ -1,6 +1,7 @@
 {
   "name": "thecla-theme",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Rethemes Claude Code's desktop and mobile apps in Thecla: rose, orchid and cyan, with a gradient edge above the prompt that flows faster as the session works or waits on you",
-  "types": "./types/index.d.ts"
+  "types": "./types/index.d.ts",
+  "license": "MIT"
 }

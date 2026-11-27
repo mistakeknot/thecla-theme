@@ -92,7 +92,13 @@ const Edge: ClientModule<EdgeProps, State> = (props, surface) => {
       surface.setState({ ...now, motion: step(now.motion, now.live.status) })
     })
   }
-  state.live.status = props.status
+  // A new status goes through setState, never into the state in place: the
+  // app may hand the clock a copy, and a change made in place never reaches it.
+  // A props change comes between renders, so this is no render loop.
+  if (state.live.status !== props.status) {
+    state = { ...state, live: { status: props.status } }
+    surface.setState(state)
+  }
 
   const { fadeIn, edge, fadeOut } = frameAt(surface.isMotionReduced ? 0 : state.motion.phase)
   const end = (color: string, key: string) => (
