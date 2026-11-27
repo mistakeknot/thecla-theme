@@ -69,6 +69,9 @@ Once Claude Code has loaded the mod, `.claude-plugin/types/` holds its types and
 - Theme tokens and images don't reach the prompt edge, so the line is a row of
   fixed-color boxes in Thecla's light-mode stops (they also read on black).
 - The mobile line stays still: only the desktop draws it on its own frame clock.
+- The desktop line also stands still, at every status, while reduced motion is
+  on: the app's own motion setting or the system's (on macOS, System Settings >
+  Accessibility > Display > Reduce motion). Turn it off to see the line flow.
 - The fastest pace follows the app's permission and notification hooks and
   questions the model asks; a prompt that raises neither keeps the working pace.
 - A mod can only ask for the generic monospaced family, not a specific font.
