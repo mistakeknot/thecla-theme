@@ -1,7 +1,7 @@
 import { expect, test } from 'claude-code/testing'
 
 import { EDGE } from './register.js'
-import { edgeAt, frameAt, PERIOD, step } from './edge-client.js'
+import Edge, { edgeAt, frameAt, PERIOD, step } from './edge-client.js'
 
 const { fadeIn: FADE_IN, fadeOut: FADE_OUT } = frameAt(0)
 
@@ -110,7 +110,62 @@ test('the line flows on the frame clock, and rests for less motion', async $ => 
   await ui.unmount()
 })
 
-test('the edge says idle, working, or asking while the session waits on the person', async ($, on) => {
+test('a change of status changes how fast the line flows', async $ => {
+  const ui = await $.ui.mount({ ...BESIDE, surface: 'desktop', props: BESIDE_PROPS })
+  const colours = async () => (await ui.findAll({ type: 'Box', in: 'edge' })).slice(1 + 24, 1 + 24 + 32).map(s => s.props.backgroundColor)
+
+  // idle for a second, then working for a second, ticking as the client does
+  let motion = { phase: 0, rate: 1 / PERIOD.idle }
+  await ui.advance(1000)
+  for (let i = 0; i < 20; i++) motion = step(motion, 'idle')
+  expect(await colours()).toEqual(edgeAt(motion.phase))
+
+  await ui.redraw({ ...BESIDE_PROPS, isWorking: true })
+  await ui.advance(1000)
+  for (let i = 0; i < 20; i++) motion = step(motion, 'working')
+  // the working pace has taken over, well past where idle would have reached
+  expect(motion.phase).toBeGreaterThan(0.1)
+  expect(await colours()).toEqual(edgeAt(motion.phase))
+  await ui.unmount()
+})
+
+test('a new status reaches the clock when the app hands out copies of the state', () => {
+  // The app may give the client a fresh, read-only copy of its state on each
+  // read, as one across a thread boundary would: a change made in place is
+  // lost there, or throws.
+  const freeze = <T,>(v: T): T => {
+    if (v && typeof v === 'object') {
+      for (const k of Object.keys(v)) freeze((v as Record<string, unknown>)[k])
+      Object.freeze(v)
+    }
+    return v
+  }
+  let stored: unknown
+  let tick = () => {}
+  const surface = {
+    elements: { Box: (p: unknown) => p },
+    get state() {
+      return stored === undefined ? undefined : freeze(JSON.parse(JSON.stringify(stored)))
+    },
+    setState: (next: unknown) => { stored = next },
+    every: (_ms: number, fn: () => void) => { tick = fn; return () => {} },
+    isWindowFocused: true,
+    isMotionReduced: false,
+    columns: 80,
+    rows: 1,
+    beneath: [],
+  } as unknown as Parameters<typeof Edge>[1]
+
+  Edge({ status: 'idle' }, surface)
+  for (let i = 0; i < 20; i++) tick()
+  Edge({ status: 'working' }, surface)
+  for (let i = 0; i < 60; i++) tick()
+  const now = stored as { motion: { rate: number }; live: { status: string } }
+  expect(now.live.status).toBe('working')
+  expect(Math.abs(now.motion.rate - 1 / PERIOD.working)).toBeLessThan(1e-5)
+})
+
+test('the edge says idle, working, or asking while the session waits on the person',async ($, on) => {
   // nothing beneath the plugins answers a notice in a test
   on('classic.Notification', () => ({}))
   on('prompt.submit', (_, e) => ({ text: e.text }))
